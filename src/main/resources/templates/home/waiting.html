@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>Enter Sequence!</title>
+</head>
+
+<body>
+<th:block layout:fragment="content">
+    <style>
+        .myForm {
+            min-width: 500px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        @media (max-width: 500px) {
+            .myForm {
+                min-width: 90%;
+            }
+        }
+    </style>
+    <div class="myForm">
+        <div class="card p-4 border-top-left-radius-0 border-top-right-radius-0">
+            <form>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username">
+                    <div id="text_help" class="form-text">Input your name</div>
+                </div>
+                <div class="float-end mb-3">
+                    <button type="submit" class="btn btn-primary" onclick="onClickSubmit(event)">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="waitingModal" tabindex="-1" role="dialog" aria-labelledby="waitingModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="waitingModalLabel">대기열</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span id="waiting"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="onClickCancel(event)">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="ScriptBlock">
+    <script type="text/javascript" th:inline="javascript">
+        var socket
+        var ws
+        var reconnect = 0;
+        var username = '';
+        var movieId = '1';
+
+        function onClickSubmit(e) {
+            e.preventDefault();
+
+            if (ws)
+                disconnection();
+
+            socket = new SockJS("/reserve/waiting");
+            ws = Stomp.over(socket);
+
+            username = $('#username').val();
+
+            ws.connect({}, function(frame) {
+                ws.subscribe("/sub/waiting/wait", function(message) {
+                    let recv = JSON.parse(message.body);
+                    if (recv.rank + '') {
+                        $('#waiting').text(recv.rank);
+
+                        if (recv.url !== '' && recv.url != null) {
+                            location.href = `${recv.url}?s=${recv.sessionId}`;
+                        }
+                    }
+                });
+                ws.send("/pub/waiting/register", {}, JSON.stringify({movieId: movieId, username: username}));
+
+                // modal open
+                $('#waitingModal').modal('show');
+
+            }, function(error) {
+                console.log(error);
+                if(reconnect++ <= 5) {
+                    setTimeout(function() {
+                        console.log("connection reconnect");
+                        onClickSubmit(e);
+                    },10*1000);
+                }
+            });
+        }
+
+        $(window).on('beforenunload', function() {
+            disconnection();
+        });
+
+        function disconnection() {
+            if (ws !== null && username !== '') {
+                ws.send('/pub/waiting/exit', {}, JSON.stringify({movieId: movieId}));
+                ws.disconnect(function() {});
+            }
+        }
+
+        function onClickCancel(e) {
+            e.preventDefault();
+
+            disconnection();
+        }
+
+    </script>
+</th:block>
+
+</body>
+</html>

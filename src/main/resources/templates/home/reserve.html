@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>Reserved</title>
+</head>
+
+<body>
+<th:block layout:fragment="content">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <div class="p-3" th:each="reserve : ${reserveList}">
+            Movie: <span th:text="${reserve.movieName}">username</span>
+            , Seat: <span th:text="${reserve.seatName}">0</span>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="ScriptBlock">
+    <script type="text/javascript" th:inline="javascript">
+    </script>
+</th:block>
