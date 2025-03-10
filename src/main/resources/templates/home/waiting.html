@@ -84,7 +84,7 @@
                         $('#waiting').text(recv.rank);
 
                         if (recv.url !== '' && recv.url != null) {
-                            location.href = `${recv.url}?s=${recv.sessionId}`;
+                            // location.href = `${recv.url}?s=${recv.sessionId}`;
                         }
                     }
                 });
@@ -118,6 +118,7 @@
         function onClickCancel(e) {
             e.preventDefault();
 
+            $('#waitingModal').modal('toggle');
             disconnection();
         }
 
