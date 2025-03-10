@@ -12,7 +12,7 @@
  - 정상적인 시나리오를 거치지 않고 Get 으로 화면 이동을 요청하는 경우를 위해 페이지 이동시 매번 저장된 데이터를 조회해 Home 화면으로 이동시킨다.
 
 # 시나리오
- - 대기 신청
+ - 대기 신청  
   ![image](https://github.com/user-attachments/assets/dcde90e7-3594-46d6-9266-c508d9df07bd)  
  - 좌석 페이지 이동  
   ![image](https://github.com/user-attachments/assets/93275be5-c4e0-41a8-928c-e7fbf69b7d91)  
