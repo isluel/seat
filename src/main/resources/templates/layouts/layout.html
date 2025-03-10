@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      th:class="root-text-sm" class="root-text-sm" lang="en">
+<head>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">SEAT</title>
+    <th:block th:insert="~{fragments/_Head}" />
+</head>
+<body class="mod-bg-1 header-function-fixed nav-function-fixed">
+<script type="text/javascript" th:inline="javascript"> var contextPath = /*[[@{/}]]*/ ''; </script>
+
+<div class="page-wrapper">
+    <div class="page-inner">
+        <div class="page-content-wrapper">
+            <main id="js-page-content" role="main" class="page-content">
+                <div id="content">
+                    <th:block layout:fragment="content" />
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="~{fragments/_ScriptBasePlugins}" />
+
+<th:block layout:fragment="ScriptBlock">
+    <!--/*page specific scripts here*/-->
+
+</th:block>
+</body>
+</html>
